@@ -8,11 +8,13 @@ const SignUp = () => {
   const handleForm = async (e) => {
     e.preventDefault()
 
-    await fetch(`http://localhost:4000/register`, {
-      method: `POST`,
+    const resp = await fetch('http://localhost:4000/register', {
+      method: 'POST',
       body: JSON.stringify({ name, email, password }),
       headers: { 'Content-Type': 'application/json' },
     })
+    if (resp.ok === false) alert(`registration failed`)
+    else alert(`registration successful`)
   }
 
   return (
