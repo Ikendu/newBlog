@@ -1,17 +1,33 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { Navigate } from 'react-router-dom'
+import { UserContext } from '../userContext'
 
 const Login = () => {
   const [email, setEmail] = useState(``)
   const [password, setPassword] = useState(``)
+  const [redirect, setRedirect] = useState(false)
+  const { setUserInfo } = useContext(UserContext)
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    await fetch('http://localhost:4000/login', {
+    const resp = await fetch('http://localhost:4000/login', {
       method: `Post`,
       body: JSON.stringify({ email, password }),
       headers: { 'Content-Type': 'application/json' },
+      credentials: `include`,
     })
+    if (resp.ok) {
+      resp.json().then((userInfo) => {
+        setUserInfo(userInfo)
+        setRedirect(true)
+      })
+    } else alert(`wrong credentials`)
   }
+  if (redirect) {
+    return <Navigate to={'/'} />
+  }
+
   return (
     <>
       <form className='login' onSubmit={handleSubmit}>

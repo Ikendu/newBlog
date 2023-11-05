@@ -13,8 +13,10 @@ const SignUp = () => {
       body: JSON.stringify({ name, email, password }),
       headers: { 'Content-Type': 'application/json' },
     })
-    if (resp.ok === false) alert(`registration failed`)
-    else alert(`registration successful`)
+    // if (!resp.ok) alert(`registration failed`)
+    // else alert(`registration successful`)
+    if (resp.status === 200) alert(`registration successful`)
+    else alert(`registration failed`)
   }
 
   return (
