@@ -32,4 +32,11 @@ app.post('/register', async (req, res) => {
   //res.json({ requestData: { name, email, password } })
 })
 
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body
+  const userDoc = await User.findOne({ email })
+  const passOk = bcrypt.compareSync(password, userDoc.password)
+  res.json(passOk)
+})
+
 app.listen(4000)
