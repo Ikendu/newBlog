@@ -5,7 +5,9 @@ const User = require('./models/User')
 const bcrypt = require('bcryptjs')
 const jwt = require(`jsonwebtoken`)
 const cookieParser = require(`cookie-parser`)
-
+const multer = require(`multer`)
+const uploadMd = multer({ dest: `uploads/` })
+const fs = require(`fs`)
 const app = express()
 
 const salt = bcrypt.genSaltSync(10)
@@ -60,10 +62,17 @@ app.get(`/profile`, (req, res) => {
     if (err) throw err
     res.json(info)
   })
-  res.json(req.cookies)
 })
 
 app.post(`/logout`, (req, res) => {
   res.cookie(`token`, ``).json(`ok`)
+})
+
+app.post(`/create`, uploadMd.single(`file`), (req, res) => {
+  const { originalname, path } = req.file
+  const part = originalname.split(`.`)
+  const ext = part[part.length - 1].toLowerCase()
+  fs.renameSync(path, path + `.` + ext)
+  res.json({ ext })
 })
 app.listen(4000)
