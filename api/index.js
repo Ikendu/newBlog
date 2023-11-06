@@ -17,6 +17,7 @@ const secret = `jbghfrheirufbcvfsjh47jh33hj4h32h25hjhh47hberbb47pajcncvbxnmxn`
 app.use(cors({ credentials: true, origin: `http://localhost:5173` }))
 app.use(express.json())
 app.use(cookieParser())
+app.use('/uploads', express.static(__dirname + '/uploads'))
 
 mongoose.connect(
   'mongodb+srv://blog:33AvNrvMD2pajN2l@cluster0.8fgl6wb.mongodb.net/?retryWrites=true&w=majority'
@@ -76,18 +77,22 @@ app.post(`/create`, uploadMd.single(`file`), async (req, res) => {
   const filePath = path + `.` + ext
   fs.renameSync(path, filePath)
 
-  const { title, summary, content } = req.body
-
-  const postDoc = await Post.create({
-    title,
-    summary,
-    content,
-    cover: filePath,
+  const { token } = req.cookies
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err
+    const { title, summary, content } = req.body
+    const postDoc = await Post.create({
+      title,
+      summary,
+      content,
+      cover: filePath,
+      author: info.id,
+    })
+    res.json(postDoc)
   })
-  res.json(postDoc)
 })
 
 app.get(`/post`, async (req, res) => {
-  res.json(await Post.find())
+  res.json(await Post.find().populate(`author`, ['name']).sort({ createdAt: -1 }).limit(20))
 })
 app.listen(4000)
