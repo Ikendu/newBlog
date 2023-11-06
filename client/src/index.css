@@ -56,6 +56,10 @@ img {
   margin: 10px;
   line-height: 1.4rem;
 }
+.post a {
+  text-decoration: none;
+  color: inherit;
+}
 
 /* form data */
 form.login,
@@ -71,7 +75,7 @@ input {
   border-radius: 5px;
   border: 2px solid #b4aaaa;
 }
-form .btn {
+button {
   width: 100%;
   margin: 10px 5px;
   padding: 7px;
@@ -79,6 +83,17 @@ form .btn {
   color: #e9e6e6;
   border-radius: 5px;
 }
-form h2 {
+form.login h2,
+form.register h2 {
   text-align: center;
+}
+
+.post-page .img {
+  max-height: 200px;
+  overflow: hidden;
+  display: flex;
+}
+.post-page .img img {
+  object-fit: cover;
+  object-position: center center;
 }
