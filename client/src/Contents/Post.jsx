@@ -1,23 +1,29 @@
-const Post = () => {
+import TimeAgo from 'javascript-time-ago'
+
+import en from 'javascript-time-ago/locale/en.json'
+import ru from 'javascript-time-ago/locale/ru.json'
+
+import ReactTimeAgo from 'react-time-ago'
+
+TimeAgo.addDefaultLocale(en)
+TimeAgo.addLocale(ru)
+
+const Post = ({ title, summary, content, cover, createdAt }) => {
   return (
     <div className='post'>
       <div className='image'>
-        <img src='images/samp.jpg' />
+        <img src={cover} />
       </div>
       <div className='texts'>
-        <h2>Shanaham Hospital Nsukka Enugu State, Nigeria</h2>
+        <h2>{title}</h2>
         <p className='info'>
           <a href='' className='author'>
             Younglife Ike
           </a>
-          <time>2023-10-23 15:24</time>
+          {/* <time>{formatISO9075(new Date(createdAt))}</time> */}
+          <ReactTimeAgo date={createdAt} locale='en-US' />
         </p>
-        <p className='summary'>
-          Front-end Development and System Maintenance 2022 - 2023 LifElla Ventures, University
-          Market Road, Nsukka, 1. Online store project done with JavaScript, HTML, CSS and
-          bootstrap. https://lifella.com.ng/ 2. E-Commerce project with done with Reactjs, Reduxjs
-          and CSS https://gifthairs.netlify.app/
-        </p>
+        <p className='summary'>{summary}</p>
       </div>
     </div>
   )
