@@ -92,15 +92,15 @@ app.post(`/create`, uploadMd.single(`file`), async (req, res) => {
   })
 })
 
-app.put(`/edit`, uploadMd.single(`file`), async (req, res) => {
+app.put(`/post`, uploadMd.single(`file`), async (req, res) => {
   //res.json(req.file)
-  let filePath = null
+  let newPath = null
   if (req.file) {
     const { originalname, path } = req.file
     const part = originalname.split(`.`)
     const extension = part[part.length - 1].toLowerCase()
-    filePath = path + `.` + extension
-    fs.renameSync(path, filePath)
+    newPath = path + `.` + extension
+    fs.renameSync(path, newPath)
   }
   const { token } = req.cookies
   jwt.verify(token, secret, {}, async (err, info) => {
@@ -108,11 +108,19 @@ app.put(`/edit`, uploadMd.single(`file`), async (req, res) => {
     const { id, title, summary, content } = req.body
     const postDoc = await Post.findById(id)
     const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id)
-    //res.json({ isAuthor, postDoc, info })
+    res.json({ isAuthor, postDoc, info })
     if (!isAuthor) {
-      res.status(400).json(`You are not the author`)
-      throw `You are not the author`
+      return res.status(400).json(`You are not the author`)
+      //throw `You are not the author`
     }
+    await postDoc.updateOne({
+      title,
+      summary,
+      content,
+      cover: newPath ? newPath : postDoc.cover,
+    })
+    //.exec()
+    res.json(postDoc)
   })
 })
 
