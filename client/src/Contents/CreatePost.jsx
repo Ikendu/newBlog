@@ -53,7 +53,6 @@ const CreatePost = () => {
     if (resp.ok) {
       setRedirect(true)
     }
-    console.log(resp)
   }
   if (redirect) return <Navigate to={'/'} />
 
