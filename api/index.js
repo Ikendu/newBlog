@@ -93,7 +93,27 @@ app.post(`/create`, uploadMd.single(`file`), async (req, res) => {
 })
 
 app.put(`/edit`, uploadMd.single(`file`), async (req, res) => {
-  res.json(req)
+  //res.json(req.file)
+  let filePath = null
+  if (req.file) {
+    const { originalname, path } = req.file
+    const part = originalname.split(`.`)
+    const extension = part[part.length - 1].toLowerCase()
+    filePath = path + `.` + extension
+    fs.renameSync(path, filePath)
+  }
+  const { token } = req.cookies
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err
+    const { id, title, summary, content } = req.body
+    const postDoc = await Post.findById(id)
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id)
+    //res.json({ isAuthor, postDoc, info })
+    if (!isAuthor) {
+      res.status(400).json(`You are not the author`)
+      throw `You are not the author`
+    }
+  })
 })
 
 app.get(`/post`, async (req, res) => {
