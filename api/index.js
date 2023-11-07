@@ -92,7 +92,17 @@ app.post(`/create`, uploadMd.single(`file`), async (req, res) => {
   })
 })
 
+app.put(`/edit`, uploadMd.single(`file`), async (req, res) => {
+  res.json(req)
+})
+
 app.get(`/post`, async (req, res) => {
   res.json(await Post.find().populate(`author`, ['name']).sort({ createdAt: -1 }).limit(20))
+})
+
+app.get('/post/:id', async (req, res) => {
+  const { id } = req.params
+  const postDoc = await Post.findById(id).populate(`author`, [`name`])
+  res.json(postDoc)
 })
 app.listen(4000)
