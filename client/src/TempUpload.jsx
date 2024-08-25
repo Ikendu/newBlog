@@ -3,6 +3,7 @@ import { useState } from "react";
 export default function TempUpload() {
   const [imageFileInput, setImageFileInput] = useState("");
   const [selectedFile, setSelecedFile] = useState("");
+  const [filePreviewURL, setFilePreviewURL] = useState("");
 
   const handleFileInput = (e) => {
     e.preventDefault();
@@ -11,7 +12,11 @@ export default function TempUpload() {
   };
 
   const previewImageFile = (file) => {
-    const preview = new FileReader();
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onLoadend = () => {
+      setFilePreviewURL(reader.result);
+    };
   };
 
   return (
